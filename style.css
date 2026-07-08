@@ -28,44 +28,51 @@ body {
 }
 
 main {
-  width: min(90vw, 340px);
+  width: min(90vw, 420px);
   animation: appear 0.5s ease both;
 }
 
+/* имя с курсором */
 .avatar {
   font-size: 22px;
   font-weight: 400;
   color: #fff;
   letter-spacing: -0.02em;
-  margin-bottom: 4px;
-  display: inline-flex;
+  margin-bottom: 16px;
+  display: flex;
   align-items: center;
-  gap: 2px;
 }
 
 .avatar::after {
   content: "";
   display: inline-block;
-  width: 10px;
+  width: 9px;
   height: 18px;
   background: var(--cursor);
   margin-left: 4px;
   animation: blink 1.1s step-start infinite;
 }
 
+/* bio — pre сохраняет переносы как есть */
 .bio {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 300;
   color: var(--fg);
+  line-height: 1.7;
   margin-bottom: 20px;
-  margin-top: 10px;
+  white-space: pre;
+  min-height: 6em;
 }
 
+/* разделитель */
 hr {
   border: none;
   border-top: 1px solid #1c1c1c;
   margin-bottom: 20px;
-  width: 100%;
 }
 
+/* ссылки */
 .links {
   list-style: none;
   display: flex;
@@ -95,13 +102,13 @@ hr {
   50%       { opacity: 0; }
 }
 
-
 @keyframes appear {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.bio {
-  overflow: hidden;
-  white-space: pre-wrap;
+@media (max-width: 500px) {
+  .bio {
+    font-size: 12px;
+  }
 }
