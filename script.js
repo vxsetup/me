@@ -1,18 +1,16 @@
 const bio = document.querySelector(".bio");
 
-const lines = [
-  "devops engineer",
-  "infrastructure · ci/cd · containers",
-  "",
-  "stack: k8s · docker · terraform",
-  "based in krasnoyarsk · busy by work",
-];
+const text = 
+`devops engineer
+infrastructure · ci/cd · containers
 
-const text = lines.join("\n");
+stack: k8s · docker · terraform
+based in krasnoyarsk · busy by work`;
+
 bio.textContent = "";
 
 let i = 0;
-const speed = 28;
+const speed = 25;
 
 function type() {
   if (i < text.length) {
