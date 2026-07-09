@@ -3,30 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vxs</title>
+  <title>$terminal</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <main>
-    <div class="avatar">_vxs</div>
+  <div class="terminal" id="terminal">
+    <div class="output" id="output"></div>
 
-    <pre class="bio">devops engineer
-infrastructure · ci/cd · containers
-
-stack: k8s · docker · terraform
-based in krasnoyarsk · busy by work</pre>
-
-    <hr>
-
-    <ul class="links">
-      <li>· <a href="https://github.com/vxsetup" target="_blank" rel="noopener">github</a></li>
-      <li>· <a href="https://github.com/vxsetup/nothing-os-desktop" target="_blank" rel="noopener">nothing os desktop</a></li>
-      <li>· <a href="https://github.com/vxsetup/typeflow" target="_blank" rel="noopener">typeflow</a></li>
-      <li>· <a href="https://t.me/thirdtimeusername" target="_blank" rel="noopener">telegram</a></li>
-    </ul>
-  </main>
+    <div class="input-line">
+      <span class="prompt">user@www:~$</span>
+      <input
+        type="text"
+        id="input"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        autofocus
+      />
+      <span class="cursor"></span>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
