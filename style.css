@@ -160,3 +160,31 @@ body::before {
   .ascii { font-size: 9px; }
   .cmd-list { grid-template-columns: 100px 1fr; }
 }
+
+#input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: transparent;
+  min-width: 0;
+  padding: 0;
+  position: relative;
+  z-index: 10;   /* поверх всего */
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  position: relative;
+  z-index: 10;
+}
+
+body::before {
+  z-index: 1;    
+}
