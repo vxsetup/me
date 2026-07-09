@@ -1,15 +1,18 @@
-const output = document.getElementById("output");
-const input = document.getElementById("input");
-const terminal = document.getElementById("terminal");
+document.addEventListener("DOMContentLoaded", () => {
+  const output = document.getElementById("output");
+  const input = document.getElementById("input");
+  const terminal = document.getElementById("terminal");
 
-const history = [];
-let historyIndex = -1;
+  if (!input) {
+    console.error("input not found!");
+    return;
+  }
 
-// ==============================
-// команды
-// ==============================
-const commands = {
-  help: () => `
+  const history = [];
+  let historyIndex = -1;
+
+  const commands = {
+    help: () => `
 <div class="line accent">available commands:</div>
 <div class="cmd-list">
   <span class="cmd">about</span>     <span>who am i</span>
@@ -17,26 +20,23 @@ const commands = {
   <span class="cmd">stack</span>     <span>tech i use</span>
   <span class="cmd">projects</span>  <span>my work</span>
   <span class="cmd">contact</span>   <span>get in touch</span>
-  <span class="cmd">social</span>    <span>find me online</span>
   <span class="cmd">now</span>       <span>what i'm doing</span>
   <span class="cmd">uses</span>      <span>my setup</span>
   <span class="cmd">date</span>      <span>current time</span>
   <span class="cmd">echo</span>      <span>print text</span>
   <span class="cmd">banner</span>    <span>show ascii logo</span>
   <span class="cmd">clear</span>     <span>clear screen</span>
-  <span class="cmd">exit</span>      <span>close terminal</span>
 </div>
-<div class="line muted">tip: use ↑ ↓ to browse history, tab to autocomplete</div>`,
+<div class="line muted">tip: ↑ ↓ history · tab autocomplete · ctrl+l clear</div>`,
 
-  about: () => `
+    about: () => `
 <div class="line">daniil vasilenko · aka <span style="color:var(--accent)">vxsetup</span> / vxs / dvnk</div>
 <div class="line">devops engineer · based in krasnoyarsk</div>
-<div class="line muted">infrastructure, automation and everything that runs 24/7.</div>
-<div class="line muted">i like clean setups, reproducible environments and things that just work.</div>`,
+<div class="line muted">infrastructure, automation and everything that runs 24/7.</div>`,
 
-  whoami: () => `<div class="line">vxsetup</div>`,
+    whoami: () => `<div class="line">vxsetup</div>`,
 
-  stack: () => `
+    stack: () => `
 <div class="line accent">infrastructure & devops</div>
 <div class="line">docker · docker-compose · kubernetes · terraform · ansible</div>
 <div class="line">nginx · apache · samba · traefik</div>
@@ -52,7 +52,7 @@ const commands = {
 <div class="line accent">tools</div>
 <div class="line">git · linux · vim · tmux</div>`,
 
-  projects: () => `
+    projects: () => `
 <div class="line">
   <a href="https://github.com/vxsetup/nothing-os-desktop" target="_blank">nothing-os-desktop</a>
   — nothing os inspired desktop
@@ -66,191 +66,151 @@ const commands = {
   — this site
 </div>`,
 
-  contact: () => `
+    contact: () => `
 <div class="line">telegram · <a href="https://t.me/thirdtimeusername" target="_blank">@thirdtimeusername</a></div>
 <div class="line">github   · <a href="https://github.com/vxsetup" target="_blank">@vxsetup</a></div>`,
 
-  social: () => commands.contact(),
-
-  now: () => `
+    now: () => `
 <div class="line">📍 krasnoyarsk, russia</div>
 <div class="line">💼 busy by work</div>
-<div class="line">🔧 automating home lab</div>
-<div class="line">📚 learning go & k8s internals</div>`,
+<div class="line">🔧 automating home lab</div>`,
 
-  uses: () => `
+    uses: () => `
 <div class="line accent">setup</div>
 <div class="line">os      · linux</div>
 <div class="line">editor  · vim / vscode</div>
 <div class="line">shell   · zsh + tmux</div>
-<div class="line">font    · jetbrains mono</div>
-<div class="line">terminal· alacritty</div>`,
+<div class="line">font    · jetbrains mono</div>`,
 
-  date: () => `<div class="line">${new Date().toString()}</div>`,
+    date: () => `<div class="line">${new Date().toString()}</div>`,
 
-  echo: (args) => `<div class="line">${escapeHtml(args.join(" "))}</div>`,
+    echo: (args) => `<div class="line">${escapeHtml(args.join(" "))}</div>`,
 
-  banner: () => `<pre class="ascii">
-██╗   ██╗██╗  ██╗███████╗███████╗████████╗██╗   ██╗██████╗ 
-██║   ██║╚██╗██╔╝██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
-██║   ██║ ╚███╔╝ ███████╗█████╗     ██║   ██║   ██║██████╔╝
-╚██╗ ██╔╝ ██╔██╗ ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝ 
- ╚████╔╝ ██╔╝ ██╗███████║███████╗   ██║   ╚██████╔╝██║     
-  ╚═══╝  ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝     
+    banner: () => `<pre class="ascii">
+██╗   ██╗██╗  ██╗███████╗
+██║   ██║╚██╗██╔╝██╔════╝
+██║   ██║ ╚███╔╝ ███████╗
+╚██╗ ██╔╝ ██╔██╗ ╚════██║
+ ╚████╔╝ ██╔╝ ██╗███████║
+  ╚═══╝  ╚═╝  ╚═╝╚══════╝
 </pre>`,
 
-  clear: () => {
-    output.innerHTML = "";
-    return null;
-  },
+    clear: () => {
+      output.innerHTML = "";
+      return null;
+    },
 
-  exit: () => {
-    printLine('<div class="line muted">closing session...</div>');
-    setTimeout(() => window.close(), 500);
-    return null;
-  },
+    ls: () => `<div class="line">about  stack  projects  contact  now  uses</div>`,
+    sudo: () => `<div class="line error">visitor is not in the sudoers file.</div>`,
+    rm: () => `<div class="line error">nice try 😏</div>`,
+  };
 
-  ls: () => `<div class="line">about  stack  projects  contact  now  uses</div>`,
-
-  sudo: () => `<div class="line error">visitor is not in the sudoers file. this incident will be reported.</div>`,
-
-  rm: () => `<div class="line error">nice try 😏</div>`,
-
-  cat: () => `<div class="line muted">use 'about' or 'stack' instead 🐈</div>`,
-};
-
-// ==============================
-// хелперы
-// ==============================
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function printLine(html) {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  output.appendChild(div);
-}
-
-function printPrompt(cmd) {
-  printLine(`<div class="line command"><span style="color:var(--green)">visitor@vxsetup:~$</span> ${escapeHtml(cmd)}</div>`);
-}
-
-function scrollBottom() {
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-}
-
-// ==============================
-// исполнение
-// ==============================
-function execute(raw) {
-  const trimmed = raw.trim();
-  if (!trimmed) {
-    printPrompt("");
-    return;
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
-  history.unshift(trimmed);
-  historyIndex = -1;
-
-  const [cmd, ...args] = trimmed.split(/\s+/);
-  printPrompt(trimmed);
-
-  const fn = commands[cmd.toLowerCase()];
-  if (fn) {
-    const result = fn(args);
-    if (result !== null) printLine(result);
-  } else {
-    printLine(`<div class="line error">command not found: ${escapeHtml(cmd)}</div>`);
-    printLine(`<div class="line muted">type 'help' to see available commands</div>`);
+  function printLine(html) {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    output.appendChild(div);
   }
 
-  scrollBottom();
-}
+  function printPrompt(cmd) {
+    printLine(`<div class="line command"><span style="color:var(--green)">visitor@vxsetup:~$</span> ${escapeHtml(cmd)}</div>`);
+  }
 
-// ==============================
-// автодополнение
-// ==============================
-function autocomplete(value) {
-  const matches = Object.keys(commands).filter(c => c.startsWith(value));
-  if (matches.length === 1) {
-    input.value = matches[0];
-  } else if (matches.length > 1) {
-    printPrompt(value);
-    printLine(`<div class="line muted">${matches.join("  ")}</div>`);
+  function scrollBottom() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
+
+  function execute(raw) {
+    const trimmed = raw.trim();
+    if (!trimmed) {
+      printPrompt("");
+      return;
+    }
+
+    history.unshift(trimmed);
+    historyIndex = -1;
+
+    const [cmd, ...args] = trimmed.split(/\s+/);
+    printPrompt(trimmed);
+
+    const fn = commands[cmd.toLowerCase()];
+    if (fn) {
+      const result = fn(args);
+      if (result !== null) printLine(result);
+    } else {
+      printLine(`<div class="line error">command not found: ${escapeHtml(cmd)}</div>`);
+      printLine(`<div class="line muted">type 'help' for available commands</div>`);
+    }
+
     scrollBottom();
   }
-}
 
-// ==============================
-// события
-// ==============================
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    execute(input.value);
-    input.value = "";
-  }
-
-  if (e.key === "ArrowUp") {
-    e.preventDefault();
-    if (historyIndex < history.length - 1) {
-      historyIndex++;
-      input.value = history[historyIndex];
+  function autocomplete(value) {
+    const matches = Object.keys(commands).filter(c => c.startsWith(value));
+    if (matches.length === 1) {
+      input.value = matches[0];
+    } else if (matches.length > 1) {
+      printPrompt(value);
+      printLine(`<div class="line muted">${matches.join("  ")}</div>`);
+      scrollBottom();
     }
   }
 
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-    if (historyIndex > 0) {
-      historyIndex--;
-      input.value = history[historyIndex];
-    } else {
-      historyIndex = -1;
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      execute(input.value);
       input.value = "";
     }
-  }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        input.value = history[historyIndex];
+      }
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.value = history[historyIndex];
+      } else {
+        historyIndex = -1;
+        input.value = "";
+      }
+    }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      autocomplete(input.value.trim());
+    }
+    if (e.ctrlKey && e.key.toLowerCase() === "l") {
+      e.preventDefault();
+      commands.clear();
+    }
+  });
 
-  if (e.key === "Tab") {
-    e.preventDefault();
-    autocomplete(input.value.trim());
-  }
+  // клик где угодно → фокус на input
+  document.addEventListener("click", (e) => {
+    // не сбивать выделение ссылок
+    if (e.target.tagName === "A") return;
+    input.focus();
+  });
 
-  if (e.ctrlKey && e.key === "l") {
-    e.preventDefault();
-    commands.clear();
-  }
-});
-
-// клик по терминалу — фокус на input
-terminal.addEventListener("click", () => input.focus());
-
-// ==============================
-// стартовый бут
-// ==============================
-async function boot() {
-  const bootLines = [
-    { text: "booting vxsetup terminal v1.0.0...", delay: 200, cls: "muted" },
-    { text: "loading modules... [ok]", delay: 150, cls: "success" },
-    { text: "connecting to /dev/vxs... [ok]", delay: 150, cls: "success" },
-    { text: "session started", delay: 200, cls: "muted" },
-    { text: "", delay: 100 },
-  ];
-
-  for (const line of bootLines) {
-    printLine(`<div class="line ${line.cls || ""}">${line.text}</div>`);
-    await new Promise(r => setTimeout(r, line.delay));
-  }
-
+  // === boot (синхронный, без async — надёжнее) ===
+  printLine(`<div class="line muted">booting vxsetup terminal v1.0.0...</div>`);
+  printLine(`<div class="line success">loading modules... [ok]</div>`);
+  printLine(`<div class="line success">session started</div>`);
+  printLine("<br>");
   printLine(commands.banner());
   printLine(commands.about());
-  printLine(`<div class="line muted">type <span style="color:var(--yellow)">'help'</span> to see available commands</div>`);
+  printLine(`<div class="line muted">type <span style="color:var(--yellow)">'help'</span> for available commands</div>`);
   printLine("<br>");
 
   scrollBottom();
   input.focus();
-}
-
-boot();
+});
